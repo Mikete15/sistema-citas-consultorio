@@ -1,0 +1,13 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# Archivos compilados de Java
+*.class
+
+# Archivos temporales
+*.swp
+
+# macOS
+.DS_Store
