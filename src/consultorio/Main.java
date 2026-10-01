@@ -12,6 +12,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         SistemaCitas sistema = new SistemaCitas();
         GestorArchivos gestorArchivos = new GestorArchivos();
+        gestorArchivos.cargarDatos(sistema);
 
         // Administrador temporal para comenzar las pruebas del sistema
         Administrador administrador =
