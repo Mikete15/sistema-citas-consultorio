@@ -12,9 +12,11 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         SistemaCitas sistema = new SistemaCitas();
         GestorArchivos gestorArchivos = new GestorArchivos();
+
+        // Cargar la información almacenada previamente
         gestorArchivos.cargarDatos(sistema);
 
-        // Administrador temporal para comenzar las pruebas del sistema
+        // Administrador del sistema
         Administrador administrador =
                 new Administrador("admin", "admin123");
 
@@ -24,43 +26,74 @@ public class Main {
         System.out.println(" SISTEMA DE CITAS DEL CONSULTORIO ");
         System.out.println("=================================");
 
-        System.out.print("Identificador: ");
-        String id = scanner.nextLine();
+        boolean accesoCorrecto = false;
 
-        System.out.print("Contraseña: ");
-        String contrasena = scanner.nextLine();
+        while (!accesoCorrecto) {
 
-        if (sistema.validarAdministrador(id, contrasena)) {
+            System.out.print("Identificador: ");
+            String id = scanner.nextLine().trim();
 
-            System.out.println();
-            System.out.println("Acceso concedido.");
+            System.out.print("Contraseña: ");
+            String contrasena = scanner.nextLine().trim();
 
-            boolean continuar = true;
+            if (sistema.validarAdministrador(id, contrasena)) {
 
-            while (continuar) {
+                accesoCorrecto = true;
 
                 System.out.println();
-                System.out.println("========== MENÚ PRINCIPAL ==========");
-                System.out.println("1. Dar de alta doctor");
-                System.out.println("2. Dar de alta paciente");
-                System.out.println("3. Crear cita");
-                System.out.println("4. Salir");
-                System.out.print("Selecciona una opción: ");
+                System.out.println("Acceso concedido.");
 
-                String opcion = scanner.nextLine();
+            } else {
+
+                System.out.println();
+                System.out.println(
+                        "Acceso denegado. Identificador o contraseña incorrectos."
+                );
+                System.out.println("Intenta nuevamente.");
+                System.out.println();
+            }
+        }
+
+        boolean continuar = true;
+
+        while (continuar) {
+
+            System.out.println();
+            System.out.println("========== MENÚ PRINCIPAL ==========");
+            System.out.println("1. Dar de alta doctor");
+            System.out.println("2. Dar de alta paciente");
+            System.out.println("3. Crear cita");
+            System.out.println("4. Salir");
+            System.out.print("Selecciona una opción: ");
+
+            String opcion = scanner.nextLine().trim();
+
+            try {
 
                 switch (opcion) {
 
                     case "1":
-                        registrarDoctor(scanner, sistema, gestorArchivos);
+                        registrarDoctor(
+                                scanner,
+                                sistema,
+                                gestorArchivos
+                        );
                         break;
 
                     case "2":
-                        registrarPaciente(scanner, sistema, gestorArchivos);
+                        registrarPaciente(
+                                scanner,
+                                sistema,
+                                gestorArchivos
+                        );
                         break;
 
                     case "3":
-                        crearCita(scanner, sistema, gestorArchivos);
+                        crearCita(
+                                scanner,
+                                sistema,
+                                gestorArchivos
+                        );
                         break;
 
                     case "4":
@@ -69,17 +102,22 @@ public class Main {
                         break;
 
                     default:
-                        System.out.println("Opción inválida.");
+                        System.out.println(
+                                "Opción inválida. Selecciona una opción del 1 al 4."
+                        );
                         break;
                 }
+
+            } catch (Exception e) {
+
+                System.out.println();
+                System.out.println(
+                        "Ocurrió un error: " + e.getMessage()
+                );
+                System.out.println(
+                        "El programa continuará ejecutándose."
+                );
             }
-
-        } else {
-
-            System.out.println();
-            System.out.println(
-                    "Acceso denegado. Identificador o contraseña incorrectos."
-            );
         }
 
         scanner.close();
@@ -97,12 +135,16 @@ public class Main {
         String idDoctor = scanner.nextLine().trim();
 
         if (idDoctor.isEmpty()) {
-            System.out.println("El identificador no puede estar vacío.");
+            System.out.println(
+                    "El identificador no puede estar vacío."
+            );
             return;
         }
 
         if (sistema.buscarDoctor(idDoctor) != null) {
-            System.out.println("Ya existe un doctor con ese identificador.");
+            System.out.println(
+                    "Ya existe un doctor con ese identificador."
+            );
             return;
         }
 
@@ -110,7 +152,9 @@ public class Main {
         String nombreCompleto = scanner.nextLine().trim();
 
         if (nombreCompleto.isEmpty()) {
-            System.out.println("El nombre no puede estar vacío.");
+            System.out.println(
+                    "El nombre no puede estar vacío."
+            );
             return;
         }
 
@@ -118,12 +162,18 @@ public class Main {
         String especialidad = scanner.nextLine().trim();
 
         if (especialidad.isEmpty()) {
-            System.out.println("La especialidad no puede estar vacía.");
+            System.out.println(
+                    "La especialidad no puede estar vacía."
+            );
             return;
         }
 
         Doctor doctor =
-                new Doctor(idDoctor, nombreCompleto, especialidad);
+                new Doctor(
+                        idDoctor,
+                        nombreCompleto,
+                        especialidad
+                );
 
         sistema.agregarDoctor(doctor);
 
@@ -133,7 +183,9 @@ public class Main {
         );
 
         System.out.println();
-        System.out.println("Doctor registrado correctamente.");
+        System.out.println(
+                "Doctor registrado correctamente."
+        );
     }
 
     private static void registrarPaciente(
@@ -148,12 +200,16 @@ public class Main {
         String idPaciente = scanner.nextLine().trim();
 
         if (idPaciente.isEmpty()) {
-            System.out.println("El identificador no puede estar vacío.");
+            System.out.println(
+                    "El identificador no puede estar vacío."
+            );
             return;
         }
 
         if (sistema.buscarPaciente(idPaciente) != null) {
-            System.out.println("Ya existe un paciente con ese identificador.");
+            System.out.println(
+                    "Ya existe un paciente con ese identificador."
+            );
             return;
         }
 
@@ -161,12 +217,17 @@ public class Main {
         String nombreCompleto = scanner.nextLine().trim();
 
         if (nombreCompleto.isEmpty()) {
-            System.out.println("El nombre no puede estar vacío.");
+            System.out.println(
+                    "El nombre no puede estar vacío."
+            );
             return;
         }
 
         Paciente paciente =
-                new Paciente(idPaciente, nombreCompleto);
+                new Paciente(
+                        idPaciente,
+                        nombreCompleto
+                );
 
         sistema.agregarPaciente(paciente);
 
@@ -176,7 +237,9 @@ public class Main {
         );
 
         System.out.println();
-        System.out.println("Paciente registrado correctamente.");
+        System.out.println(
+                "Paciente registrado correctamente."
+        );
     }
 
     private static void crearCita(
@@ -191,28 +254,48 @@ public class Main {
         String idCita = scanner.nextLine().trim();
 
         if (idCita.isEmpty()) {
-            System.out.println("El identificador no puede estar vacío.");
+            System.out.println(
+                    "El identificador no puede estar vacío."
+            );
             return;
         }
 
         if (sistema.buscarCita(idCita) != null) {
-            System.out.println("Ya existe una cita con ese identificador.");
+            System.out.println(
+                    "Ya existe una cita con ese identificador."
+            );
             return;
         }
 
-        System.out.print("Fecha y hora (dd/MM/yyyy HH:mm): ");
-        String fechaHoraTexto = scanner.nextLine().trim();
+        System.out.print(
+                "Fecha y hora (dd/MM/yyyy HH:mm): "
+        );
+
+        String fechaHoraTexto =
+                scanner.nextLine().trim();
 
         DateTimeFormatter formato =
-                DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                DateTimeFormatter.ofPattern(
+                        "dd/MM/yyyy HH:mm"
+                );
 
         LocalDateTime fechaHora;
 
         try {
-            fechaHora = LocalDateTime.parse(fechaHoraTexto, formato);
+
+            fechaHora =
+                    LocalDateTime.parse(
+                            fechaHoraTexto,
+                            formato
+                    );
+
         } catch (DateTimeParseException e) {
+
             System.out.println(
-                    "Formato de fecha y hora inválido. Utiliza dd/MM/yyyy HH:mm."
+                    "Formato de fecha y hora inválido."
+            );
+            System.out.println(
+                    "Utiliza el formato dd/MM/yyyy HH:mm."
             );
             return;
         }
@@ -221,32 +304,68 @@ public class Main {
         String motivo = scanner.nextLine().trim();
 
         if (motivo.isEmpty()) {
-            System.out.println("El motivo no puede estar vacío.");
+            System.out.println(
+                    "El motivo no puede estar vacío."
+            );
             return;
         }
 
-        System.out.print("Identificador del doctor: ");
-        String idDoctor = scanner.nextLine().trim();
+        System.out.print(
+                "Identificador del doctor: "
+        );
 
-        Doctor doctor = sistema.buscarDoctor(idDoctor);
+        String idDoctor =
+                scanner.nextLine().trim();
+
+        if (idDoctor.isEmpty()) {
+            System.out.println(
+                    "El identificador del doctor no puede estar vacío."
+            );
+            return;
+        }
+
+        Doctor doctor =
+                sistema.buscarDoctor(idDoctor);
 
         if (doctor == null) {
-            System.out.println("Doctor no encontrado.");
+            System.out.println(
+                    "Doctor no encontrado."
+            );
             return;
         }
 
-        System.out.print("Identificador del paciente: ");
-        String idPaciente = scanner.nextLine().trim();
+        System.out.print(
+                "Identificador del paciente: "
+        );
 
-        Paciente paciente = sistema.buscarPaciente(idPaciente);
+        String idPaciente =
+                scanner.nextLine().trim();
+
+        if (idPaciente.isEmpty()) {
+            System.out.println(
+                    "El identificador del paciente no puede estar vacío."
+            );
+            return;
+        }
+
+        Paciente paciente =
+                sistema.buscarPaciente(idPaciente);
 
         if (paciente == null) {
-            System.out.println("Paciente no encontrado.");
+            System.out.println(
+                    "Paciente no encontrado."
+            );
             return;
         }
 
         Cita cita =
-                new Cita(idCita, fechaHora, motivo, doctor, paciente);
+                new Cita(
+                        idCita,
+                        fechaHora,
+                        motivo,
+                        doctor,
+                        paciente
+                );
 
         sistema.agregarCita(cita);
 
@@ -256,6 +375,8 @@ public class Main {
         );
 
         System.out.println();
-        System.out.println("Cita registrada correctamente.");
+        System.out.println(
+                "Cita registrada correctamente."
+        );
     }
 }
