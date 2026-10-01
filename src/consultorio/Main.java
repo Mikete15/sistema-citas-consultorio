@@ -1,5 +1,8 @@
 package consultorio;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class Main {
@@ -56,7 +59,7 @@ public class Main {
                         break;
 
                     case "3":
-                        System.out.println("La opción de citas se implementará posteriormente.");
+                        crearCita(scanner, sistema, gestorArchivos);
                         break;
 
                     case "4":
@@ -173,5 +176,85 @@ public class Main {
 
         System.out.println();
         System.out.println("Paciente registrado correctamente.");
+    }
+
+    private static void crearCita(
+            Scanner scanner,
+            SistemaCitas sistema,
+            GestorArchivos gestorArchivos) {
+
+        System.out.println();
+        System.out.println("========== CREAR CITA ==========");
+
+        System.out.print("Identificador de la cita: ");
+        String idCita = scanner.nextLine().trim();
+
+        if (idCita.isEmpty()) {
+            System.out.println("El identificador no puede estar vacío.");
+            return;
+        }
+
+        if (sistema.buscarCita(idCita) != null) {
+            System.out.println("Ya existe una cita con ese identificador.");
+            return;
+        }
+
+        System.out.print("Fecha y hora (dd/MM/yyyy HH:mm): ");
+        String fechaHoraTexto = scanner.nextLine().trim();
+
+        DateTimeFormatter formato =
+                DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        LocalDateTime fechaHora;
+
+        try {
+            fechaHora = LocalDateTime.parse(fechaHoraTexto, formato);
+        } catch (DateTimeParseException e) {
+            System.out.println(
+                    "Formato de fecha y hora inválido. Utiliza dd/MM/yyyy HH:mm."
+            );
+            return;
+        }
+
+        System.out.print("Motivo de la cita: ");
+        String motivo = scanner.nextLine().trim();
+
+        if (motivo.isEmpty()) {
+            System.out.println("El motivo no puede estar vacío.");
+            return;
+        }
+
+        System.out.print("Identificador del doctor: ");
+        String idDoctor = scanner.nextLine().trim();
+
+        Doctor doctor = sistema.buscarDoctor(idDoctor);
+
+        if (doctor == null) {
+            System.out.println("Doctor no encontrado.");
+            return;
+        }
+
+        System.out.print("Identificador del paciente: ");
+        String idPaciente = scanner.nextLine().trim();
+
+        Paciente paciente = sistema.buscarPaciente(idPaciente);
+
+        if (paciente == null) {
+            System.out.println("Paciente no encontrado.");
+            return;
+        }
+
+        Cita cita =
+                new Cita(idCita, fechaHora, motivo, doctor, paciente);
+
+        sistema.agregarCita(cita);
+
+        gestorArchivos.guardar(
+                "db/citas.csv",
+                cita
+        );
+
+        System.out.println();
+        System.out.println("Cita registrada correctamente.");
     }
 }

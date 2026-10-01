@@ -62,4 +62,14 @@ public class SistemaCitas {
 
         return null;
     }
+
+    public Cita buscarCita(String id) {
+        for (Cita cita : citas) {
+            if (cita.getId().equals(id)) {
+                return cita;
+            }
+        }
+
+        return null;
+    }
 }
