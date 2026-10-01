@@ -52,7 +52,7 @@ public class Main {
                         break;
 
                     case "2":
-                        System.out.println("La opción de pacientes se implementará posteriormente.");
+                        registrarPaciente(scanner, sistema, gestorArchivos);
                         break;
 
                     case "3":
@@ -130,5 +130,48 @@ public class Main {
 
         System.out.println();
         System.out.println("Doctor registrado correctamente.");
+    }
+
+    private static void registrarPaciente(
+            Scanner scanner,
+            SistemaCitas sistema,
+            GestorArchivos gestorArchivos) {
+
+        System.out.println();
+        System.out.println("========== ALTA DE PACIENTE ==========");
+
+        System.out.print("Identificador del paciente: ");
+        String idPaciente = scanner.nextLine().trim();
+
+        if (idPaciente.isEmpty()) {
+            System.out.println("El identificador no puede estar vacío.");
+            return;
+        }
+
+        if (sistema.buscarPaciente(idPaciente) != null) {
+            System.out.println("Ya existe un paciente con ese identificador.");
+            return;
+        }
+
+        System.out.print("Nombre completo: ");
+        String nombreCompleto = scanner.nextLine().trim();
+
+        if (nombreCompleto.isEmpty()) {
+            System.out.println("El nombre no puede estar vacío.");
+            return;
+        }
+
+        Paciente paciente =
+                new Paciente(idPaciente, nombreCompleto);
+
+        sistema.agregarPaciente(paciente);
+
+        gestorArchivos.guardar(
+                "db/pacientes.csv",
+                paciente
+        );
+
+        System.out.println();
+        System.out.println("Paciente registrado correctamente.");
     }
 }
